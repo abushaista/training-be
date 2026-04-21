@@ -14,12 +14,12 @@ import * as process from 'node:process'
 import * as path from 'node:path'
 
 import * as runtime from "@prisma/client/runtime/client"
-import * as $Enums from "./enums.js"
-import * as $Class from "./internal/class.js"
-import * as Prisma from "./internal/prismaNamespace.js"
+import * as $Enums from "./enums"
+import * as $Class from "./internal/class"
+import * as Prisma from "./internal/prismaNamespace"
 
-export * as $Enums from './enums.js'
-export * from "./enums.js"
+export * as $Enums from './enums'
+export * from "./enums"
 /**
  * ## Prisma Client
  * 
@@ -44,3 +44,28 @@ export { Prisma }
  * 
  */
 export type User = Prisma.UserModel
+/**
+ * Model Course
+ * 
+ */
+export type Course = Prisma.CourseModel
+/**
+ * Model Catalog
+ * 
+ */
+export type Catalog = Prisma.CatalogModel
+/**
+ * Model EventStore
+ * 
+ */
+export type EventStore = Prisma.EventStoreModel
+/**
+ * Model Snapshot
+ * 
+ */
+export type Snapshot = Prisma.SnapshotModel
+/**
+ * Model ConsumedEvent
+ * 
+ */
+export type ConsumedEvent = Prisma.ConsumedEventModel

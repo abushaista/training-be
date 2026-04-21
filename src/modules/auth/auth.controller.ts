@@ -3,6 +3,10 @@ import { ApiBody, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse 
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { GoogleAuthGuard } from '@app/common/guards/google-auth.guard';
+import { TrainerDto } from './dto/trainer.dto';
+import { Roles } from '@app/common/decorators/roles.decorator';
+import { JwtAuthGuard } from '@app/common/guards/jwt-auth.guard';
+import { RoleGuard } from '@app/common/guards/role.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -58,4 +62,25 @@ export class AuthController {
     async googleLoginCallback(@Req() req) {
         return this.authService.login(req.user);
     }
+
+    @Post('seed-trainer')
+    @ApiOperation({ summary: 'Seed a default trainer user' })
+    @ApiOkResponse({
+        description: 'Default trainer user seeded successfully',
+    })
+    async seedTrainer() {
+        await this.authService.seedTrainer();
+    }
+
+    @UseGuards(JwtAuthGuard, RoleGuard)
+    @Roles('TRAINER')
+    @Post('add-trainer')
+    @ApiOperation({ summary: 'Add a new trainer user' })
+    @ApiOkResponse({
+        description: 'Trainer user added successfully',
+    })
+    async addTrainer(@Body() body: TrainerDto) {
+        await this.authService.addTrainer(body.email, body.name, body.password);
+    }
+
 }

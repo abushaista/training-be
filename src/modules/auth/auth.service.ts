@@ -78,4 +78,46 @@ export class AuthService {
 
         return user;
     }
+
+    async seedTrainer() {
+        const existing = await this.prisma.user.findFirst({
+            where: {
+                email: 'arif@gmail.com'
+            }
+        });
+        if (existing) {
+            return;
+        }
+        const passwordHash = await HashUtil.hashPassword('trainer123');
+        await this.prisma.user.create({
+            data: {
+                email: 'arif@gmail.com',
+                password: passwordHash,
+                name: 'Arif Trainer',
+                role: Role.TRAINER,
+                provider: 'local',
+            }
+        });
+    }
+
+    async addTrainer(email: string, name: string, password: string) {
+        const existing = await this.prisma.user.findUnique({
+            where: {
+                email,
+            }
+        });
+        if (existing) {
+            throw new Error('User with this email already exists');
+        }
+        const passwordHash = await HashUtil.hashPassword(password);
+        await this.prisma.user.create({
+            data: {
+                email,
+                password: passwordHash,
+                name,
+                role: Role.TRAINER,
+                provider: 'local',
+            }
+        });
+    }
 }

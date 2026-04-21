@@ -1,0 +1,67 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: training-app-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: training-app-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: training-data
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d training-db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: training-app-api
+    restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      PORT: 3000
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/training-data
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      RABBITMQ_EXCHANGE: training-app.events
+      RABBITMQ_QUEUE: training-app.course.events
+      RABBITMQ_ROUTING_PATTERN: "#"
+      RABBITMQ_ALLOWED_CORRELATION_IDS: ""
+      ELASTICSEARCH_URL: ""
+      ELASTICSEARCH_INDEX: training-app-logs
+      ELASTICSEARCH_USERNAME: ""
+      ELASTICSEARCH_PASSWORD: ""
+      JWT_SECRET: your-jwt-secret
+      GOOGLE_CLIENT_ID: your-google-client-id
+      GOOGLE_CLIENT_SECRET: your-google-client-secret
+      GOOGLE_CALLBACK_URL: http://localhost:3000/auth/google/callback
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:
