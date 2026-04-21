@@ -17,8 +17,8 @@
 
 import * as runtime from "@prisma/client/runtime/index-browser"
 
-export type * from '../models.js'
-export type * from './prismaNamespace.js'
+export type * from '../models'
+export type * from './prismaNamespace'
 
 export const Decimal = runtime.Decimal
 
@@ -51,7 +51,12 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  User: 'User'
+  User: 'User',
+  Course: 'Course',
+  Catalog: 'Catalog',
+  EventStore: 'EventStore',
+  Snapshot: 'Snapshot',
+  ConsumedEvent: 'ConsumedEvent'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -85,12 +90,82 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const CourseScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  content: 'content',
+  authorId: 'authorId',
+  version: 'version',
+  status: 'status',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CourseScalarFieldEnum = (typeof CourseScalarFieldEnum)[keyof typeof CourseScalarFieldEnum]
+
+
+export const CatalogScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  content: 'content',
+  publishedAt: 'publishedAt',
+  version: 'version',
+  status: 'status',
+  courseId: 'courseId'
+} as const
+
+export type CatalogScalarFieldEnum = (typeof CatalogScalarFieldEnum)[keyof typeof CatalogScalarFieldEnum]
+
+
+export const EventStoreScalarFieldEnum = {
+  id: 'id',
+  aggregateId: 'aggregateId',
+  version: 'version',
+  eventType: 'eventType',
+  payload: 'payload',
+  createdAt: 'createdAt'
+} as const
+
+export type EventStoreScalarFieldEnum = (typeof EventStoreScalarFieldEnum)[keyof typeof EventStoreScalarFieldEnum]
+
+
+export const SnapshotScalarFieldEnum = {
+  id: 'id',
+  aggregateId: 'aggregateId',
+  version: 'version',
+  state: 'state'
+} as const
+
+export type SnapshotScalarFieldEnum = (typeof SnapshotScalarFieldEnum)[keyof typeof SnapshotScalarFieldEnum]
+
+
+export const ConsumedEventScalarFieldEnum = {
+  eventId: 'eventId',
+  aggregateId: 'aggregateId',
+  version: 'version',
+  eventType: 'eventType',
+  payload: 'payload',
+  occurredAt: 'occurredAt',
+  consumedAt: 'consumedAt'
+} as const
+
+export type ConsumedEventScalarFieldEnum = (typeof ConsumedEventScalarFieldEnum)[keyof typeof ConsumedEventScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -107,4 +182,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

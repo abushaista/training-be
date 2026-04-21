@@ -6,14 +6,11 @@
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
-  moduleFormat = "cjs"
 }
 
 datasource db {
   provider = "postgresql"
 }
-
-
 enum ROLE {
   TRAINER
   TRAINEE
@@ -24,9 +21,68 @@ model User {
   email String @unique
   password String?
   name String?
+  courses     Course[] 
   provider String?
   providerId String? @unique
   role ROLE @default(TRAINEE)
   createAt DateTime @default(now())
   deleteAt DateTime?
+}
+
+model Course {
+  id          String @id @default(uuid())
+  title       String
+  description String?
+  content     String
+  authorId    String
+  author      User   @relation(fields: [authorId], references: [id])
+  version     Int
+  status      String?
+  catalogs    Catalog[]
+  updatedAt   DateTime?
+}
+
+model Catalog {
+  id          String @id @default(uuid())
+  title       String
+  description String?
+  content     String
+  publishedAt DateTime @default(now())
+  version     Int
+  status      String?
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id])
+
+  @@unique([id, version])
+  @@unique([courseId, version])
+}
+
+
+model EventStore {
+  id           String   @id @default(uuid())
+  aggregateId  String
+  version      Int
+  eventType    String
+  payload      Json
+  createdAt    DateTime @default(now())
+
+  @@unique([aggregateId, version])
+}
+
+model Snapshot {
+  id           String   @id @default(uuid())
+  aggregateId  String
+  version      Int
+  state        Json
+}
+
+model ConsumedEvent {
+  eventId     String   @id
+  aggregateId String
+  version     Int
+  eventType   String
+  payload     Json
+  occurredAt  DateTime
+  consumedAt  DateTime @default(now())
 }
